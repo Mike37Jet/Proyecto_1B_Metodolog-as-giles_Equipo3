@@ -1,0 +1,40 @@
+@startuml
+class Sokoban {
+    + main()
+}
+class Juego {
+    - tablero: Tablero
+    - jugador: Jugador
+    - scanner: Scanner
+    + Juego()
+    + iniciar()
+}
+class Jugador {
+    - int x
+    - int y
+    + Jugador()
+    + mover()
+    + getX()
+    + getY()
+}
+class Tablero {
+    - char[][] tablero
+    - char VACIO
+    - char PARED
+    - char OBJETIVO
+    - char CAJA
+    - char CAJA_OBJETIVO
+    - char JUGADOR
+    - char JUGADOR_OBJETIVO
+    + Tablero()
+    + mostrarTablero()
+    + puedeMover()
+    + colocarJugador()
+    + esVictoria(String)
+}
+
+Sokoban --> Juego
+Juego --> Jugador
+Juego --> Tablero
+Jugador .> Tablero
+@enduml
