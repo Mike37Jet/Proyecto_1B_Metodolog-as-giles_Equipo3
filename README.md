@@ -1,1 +1,0 @@
-# Proyecto_1B_Metodologias Agiles_Equipo3

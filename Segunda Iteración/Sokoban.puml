@@ -1,0 +1,67 @@
+@startuml
+class Sokoban {
+    + main()
+}
+class Juego {
+    - tablero: Mapa
+    - jugador: Jugador
+    - scanner: Scanner
+    + Juego()
+    + cargarJuego()
+    + iniciarJuego()
+    + detenerJuego()
+    + reiniciarJuego()
+    + getMapa()
+    + moverJugador()
+    + esVictoria()
+}
+
+class SokobanGUI{
+    - juego: Juego
+    - ventana: JFrame
+    - panelMapa: JPanel
+    - botones: JButton[][]
+    + SokobanGUI()
+    + inicializarVentana()
+    + actualizarMapa()
+    - obtenerIcono(char)
+    - agregarControles()
+    - procesarMovimientoJugador()
+}
+class Jugador {
+    - int x
+    - int y
+    + Jugador()
+    + mover()
+    + getX()
+    + getY()
+}
+class Mapa {
+    - mapa : TipoCelda[][]
+    + Mapa()
+    - cargarMapaDesdeArchivo()
+    + puedeMover()
+    + colocarJugador()
+    + esVictoria()
+    + getEstadoMapa()
+}
+
+enum TipoCelda {
+    PARED,
+    CAJA,
+    CAJA_SOBRE_OBJETIVO,
+    OBJETIVO,
+    JUGADOR,
+    JUGADOR_SOBRE_OBJETIVO,
+    VACIO
+    + getSimbolo()
+    + desdeSimbolo()
+}
+
+Sokoban --> SokobanGUI
+SokobanGUI -> Juego
+Juego --> Jugador
+Juego --> Mapa
+Jugador .> Mapa
+Mapa --> TipoCelda
+@enduml
