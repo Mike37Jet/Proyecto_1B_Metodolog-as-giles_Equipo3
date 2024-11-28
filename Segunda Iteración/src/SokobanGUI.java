@@ -3,40 +3,53 @@ import java.awt.*;
 
 public class SokobanGUI {
     private JFrame ventana;
-    private JPanel panelTablero;
+    private JPanel panelMapa;
     private JButton[][] botones;
     private Juego juego;
+    private Thread juegoThread;
 
     public SokobanGUI() {
-        juego = new Juego();
         inicializarVentana();
+        juego = new Juego("src/mapas/mapa.txt");
+        actualizarMapa();
+        juegoThread = new Thread(juego);
+        juego.iniciarJuego();
     }
 
     private void inicializarVentana() {
         ventana = new JFrame("Sokoban");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setLayout(new BorderLayout());
+        // Definir el tamaño de la ventana
+        ventana.setSize(280, 365); // Ancho de 800 píxeles y alto de 600 píxeles
 
-        panelTablero = new JPanel();
-        actualizarTablero();
-        ventana.add(panelTablero, BorderLayout.CENTER);
+        // Panel del tablero
+        panelMapa = new JPanel();
+        ventana.add(panelMapa, BorderLayout.CENTER);
 
+        // Panel de controles
         JPanel panelControles = new JPanel();
         agregarControles(panelControles);
         ventana.add(panelControles, BorderLayout.SOUTH);
 
-        ventana.pack();
+        // Botón de reinicio
+        JButton botonReiniciar = new JButton("R");
+        botonReiniciar.addActionListener(e -> {
+            juego.reiniciarJuego();
+            actualizarMapa();
+        });
+        panelControles.add(botonReiniciar);
+
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
     }
 
-    private void actualizarTablero() {
-
-        char[][] estadoTablero = juego.getTablero(); // Obtener el estado actual del tablero.
-        panelTablero.removeAll();
+    public void actualizarMapa() {
+        char[][] estadoTablero = juego.getMapa(); // Obtener el estado actual del tablero.
+        panelMapa.removeAll();
         int filas = estadoTablero.length;
         int columnas = estadoTablero[0].length;
-        panelTablero.setLayout(new GridLayout(filas, columnas));
+        panelMapa.setLayout(new GridLayout(filas, columnas));
         botones = new JButton[filas][columnas];
 
         for (int i = 0; i < filas; i++) {
@@ -52,11 +65,11 @@ public class SokobanGUI {
                 botones[i][j].setFocusPainted(false);
                 botones[i][j].setContentAreaFilled(false);  // Desactiva el fondo del botón
 
-                panelTablero.add(botones[i][j]);
+                panelMapa.add(botones[i][j]);
             }
         }
-        panelTablero.revalidate();
-        panelTablero.repaint();
+        panelMapa.revalidate();
+        panelMapa.repaint();
     }
 
     // Método para obtener el icono basado en el carácter del tablero.
@@ -89,16 +102,11 @@ public class SokobanGUI {
                 break;
         }
 
-
-
         ImageIcon iconoOriginal = new ImageIcon(rutaImagen);
         Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
         return iconoEscalado;
-
-
     }
-
 
     private void agregarControles(JPanel panel) {
         panel.setLayout(new GridLayout(1, 5));
@@ -111,30 +119,25 @@ public class SokobanGUI {
         botonIzquierda.addActionListener(e -> procesarMovimientoJugador("A"));
         JButton botonDerecha = new JButton("→");
         botonDerecha.addActionListener(e -> procesarMovimientoJugador("D"));
-        JButton botonReiniciar = new JButton("Reiniciar");
-        botonReiniciar.addActionListener(e -> reiniciarJuego());
+
 
         panel.add(botonIzquierda);
         panel.add(botonDerecha);
         panel.add(botonArriba);
         panel.add(botonAbajo);
-        panel.add(botonReiniciar);
+
     }
 
     private void procesarMovimientoJugador(String direccion) {
         if (!juego.moverJugador(direccion)) {
             JOptionPane.showMessageDialog(ventana, "Movimiento inválido. Intenta nuevamente.");
         }
-        actualizarTablero();
+        actualizarMapa();
         if (juego.esVictoria()) {
             JOptionPane.showMessageDialog(ventana, "¡Felicidades! Has ganado el juego.");
-            reiniciarJuego();
+            juego.reiniciarJuego();
+            actualizarMapa();
         }
     }
 
-    private void reiniciarJuego() {
-        juego = new Juego(); // Crear un nuevo juego
-        actualizarTablero();
-    }
 }
-

@@ -3,26 +3,30 @@ class Sokoban {
     + main()
 }
 class Juego {
-    - tablero: Tablero
+    - tablero: Mapa
     - jugador: Jugador
     - scanner: Scanner
     + Juego()
-    + iniciar()
+    + cargarJuego()
+    + iniciarJuego()
+    + detenerJuego()
+    + reiniciarJuego()
+    + getMapa()
+    + moverJugador()
+    + esVictoria()
 }
 
 class SokobanGUI{
     - juego: Juego
     - ventana: JFrame
-    - panelTablero: JPanel
+    - panelMapa: JPanel
     - botones: JButton[][]
     + SokobanGUI()
     + inicializarVentana()
-    + actualizarTablero()
-    + obtenerIcono(char)
-    + agregarControles()
-    + moverJugador()
-    + reiniciarJuego()
-
+    + actualizarMapa()
+    - obtenerIcono(char)
+    - agregarControles()
+    - procesarMovimientoJugador()
 }
 class Jugador {
     - int x
@@ -32,25 +36,32 @@ class Jugador {
     + getX()
     + getY()
 }
-class Tablero {
-    - char[][] tablero
-    - char VACIO
-    - char PARED
-    - char OBJETIVO
-    - char CAJA
-    - char CAJA_OBJETIVO
-    - char JUGADOR
-    - char JUGADOR_OBJETIVO
-    + Tablero()
-    + mostrarTablero()
+class Mapa {
+    - mapa : TipoCelda[][]
+    + Mapa()
+    - cargarMapaDesdeArchivo()
     + puedeMover()
     + colocarJugador()
-    + esVictoria(String)
+    + esVictoria()
+    + getEstadoMapa()
+}
+
+enum TipoCelda {
+    PARED,
+    CAJA,
+    CAJA_SOBRE_OBJETIVO,
+    OBJETIVO,
+    JUGADOR,
+    JUGADOR_SOBRE_OBJETIVO,
+    VACIO
+    + getSimbolo()
+    + desdeSimbolo()
 }
 
 Sokoban --> SokobanGUI
 SokobanGUI -> Juego
 Juego --> Jugador
-Juego --> Tablero
-Jugador .> Tablero
+Juego --> Mapa
+Jugador .> Mapa
+Mapa --> TipoCelda
 @enduml
